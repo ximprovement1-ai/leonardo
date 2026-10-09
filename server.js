@@ -22,9 +22,11 @@ http.createServer(async (req, res) => {
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': KEY }, body: JSON.stringify(body) });
       const d = await r.json();
+      if (!r.ok) console.error('Gemini error', r.status, d.error?.status, d.error?.message); // видно в Render → Logs
       const text = (d.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+      if (!text) console.error('Gemini вернул пустой ответ', JSON.stringify(d).slice(0, 300));
       return text ? send(200, { text }) : send(502, { error: 'Пустой ответ Gemini' });
-    } catch (e) { return send(500, { error: 'Ошибка сервера' }); }
+    } catch (e) { console.error('Ошибка сервера:', e.message); return send(500, { error: 'Ошибка сервера' }); }
   }
   fs.readFile(path.join(__dirname, 'index.html'), (e, d) => {
     if (e) { res.writeHead(404); return res.end('Not found'); }
