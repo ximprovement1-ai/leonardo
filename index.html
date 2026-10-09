@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Leonardo — ИИ, который учится тому, как учишься ты</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--p:#6366F1;--bl:#0271DF;--a:#22D3EE;--bg:#0B1020;--t:#E2E8F0;--m:#94A3B8;--c:#ffffff0d;--b:#ffffff1f;color-scheme:dark}
+*,*:before,*:after{box-sizing:inherit}html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;min-height:100vh;color:var(--t);background:radial-gradient(800px 500px at 0 0,#6366f133,transparent),radial-gradient(700px 400px at 100% 8%,#0271df33,transparent),radial-gradient(600px 400px at 50% 100%,#22d3ee14,transparent),var(--bg);background-attachment:fixed;font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:8px;align-items:center;padding:10px 14px;background:#0b1020cc;backdrop-filter:blur(14px);border-bottom:1px solid var(--b)}
+.chips{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none}
+.chip{flex:none;border:1px solid var(--b);background:var(--c);color:var(--t);padding:8px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer;transition:.2s}
+.chip:hover{border-color:var(--a)}.chip.on{background:linear-gradient(135deg,var(--p),var(--bl));border-color:transparent}
+.wrap{max-width:960px;margin:0 auto;padding:24px 16px 60px;display:grid;gap:18px}
+.hero{text-align:center;padding:34px 0 6px}
+h1{font-size:clamp(40px,9vw,76px);letter-spacing:.14em;margin:0;background:linear-gradient(90deg,var(--p),var(--bl) 50%,var(--a));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{margin:0 0 10px;font-size:20px}.sub{color:var(--m);margin:6px 0 12px}.m{color:var(--m)}
+.badge{display:inline-block;font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--b);color:var(--m)}.badge.on{color:var(--a);border-color:var(--a)}
+.card{background:var(--c);border:1px solid var(--b);border-radius:20px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 40px #0006;animation:in .4s ease both}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}.row>input,.row>select{flex:1;min-width:150px}
+.btn{border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:600;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--p),var(--bl));box-shadow:0 6px 24px #0271df55;transition:.2s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}.btn.g{background:var(--c);border:1px solid var(--b);box-shadow:none}
+input,select{padding:10px 12px;border-radius:12px;border:1px solid var(--b);background:#0b1020;color:var(--t);font:inherit;width:100%}
+label{display:block;font-size:13px;color:var(--m);margin-top:12px}
+.big{font-size:32px}.pb{height:8px;border-radius:9px;background:#ffffff14;overflow:hidden;margin:8px 0}.pb i{display:block;height:100%;background:linear-gradient(90deg,var(--p),var(--bl),var(--a));transition:width .6s}
+.tg{font-size:12px;padding:3px 9px;border-radius:99px;border:1px solid var(--b);color:var(--m)}.tg.hi{color:var(--a);border-color:var(--a)}.tg.lo{color:#fda4af;border-color:#fda4af}
+details{border-top:1px solid var(--b);padding:10px 0}details:first-of-type{border:0}
+summary{display:flex;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}summary span:nth-child(2){color:var(--m);margin-left:auto}
+.en{display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--b)}.en span{flex:1}
+.ic{background:none;border:1px solid var(--b);color:var(--m);border-radius:8px;width:30px;height:30px;cursor:pointer}.ic:hover{color:var(--a)}
+.st{padding:14px 16px;margin:10px 0;border-left:3px solid var(--a);background:#ffffff08;border-radius:0 14px 14px 0;animation:in .4s ease both}
+.nt{font-size:13px;color:var(--m);border:1px dashed var(--b);padding:8px 12px;border-radius:12px}
+.cv{height:360px;border-radius:16px;border:1px solid var(--b);background:#080c1a;overflow:hidden}.pad{padding:20px}
+.q{font-size:18px;margin:14px 0}.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border-radius:12px;border:1px solid var(--b);background:var(--c);color:var(--t);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--a)}.opt.ok{border-color:#34d399;background:#34d39922}.opt.no{border-color:#fb7185;background:#fb718522}
+.ld{color:var(--m);padding:14px}.ld i{display:inline-block;width:8px;height:8px;margin-right:4px;border-radius:50%;background:var(--a);animation:b 1s infinite}.ld i:nth-child(2){animation-delay:.15s}.ld i:nth-child(3){animation-delay:.3s}@keyframes b{50%{opacity:.2}}
+dialog{background:#10172e;color:var(--t);border:1px solid var(--b);border-radius:20px;padding:22px;width:min(440px,92vw)}dialog::backdrop{background:#000a;backdrop-filter:blur(4px)}
+.err{color:#fda4af;font-size:13px;min-height:18px}
+</style></head><body>
+<header class="bar"><nav class="chips" id="chips" aria-label="Предметы"></nav><button class="chip" id="pbtn" aria-label="Профиль">👤 Профиль</button></header>
+<main class="wrap">
+<section class="hero"><h1>LEONARDO</h1><p class="sub">ИИ, который учится тому, как учишься ты</p><p class="m" id="hello"></p><span id="mode" class="badge"></span></section>
+<section class="card" id="subj" hidden></section>
+<section class="card"><h2>Мои оценки за тесты</h2><div id="scores"></div></section>
+<section class="card" id="learn"><h2>Начать обучение</h2><p class="m">Leonardo учитывает твои оценки: темы, где ты ≥75%, становятся «мостиками» к новым.</p>
+<div class="row"><select id="ls" aria-label="Предмет"></select><input id="lt" placeholder="Тема (можно пусто — выберет Leonardo)" aria-label="Тема" maxlength="80"></div>
+<div class="row"><button class="btn" id="bl">Начать урок</button><button class="btn g" data-task="1">Задача с 3D</button></div><div id="out" aria-live="polite"></div></section>
+</main>
+
+<dialog id="rd"><form id="rform"><h2>Добро пожаловать в Leonardo</h2><p class="m">Расскажи о себе — обучение подстроится под тебя.</p>
+<label>Имя<input id="rn" maxlength="30" autocomplete="given-name"></label>
+<label>Кто ты<select id="rt"><option value="school">Школьник</option><option value="college">Студент</option></select></label>
+<label>Класс / курс<select id="rl"></select></label>
+<label>Возраст<input id="ra" type="number" min="5" max="60"></label>
+<label>Любимый предмет<select id="rf"></select></label><p class="err" id="re"></p>
+<div class="row"><button class="btn">Сохранить</button><button type="button" class="btn g" id="rc" hidden>Отмена</button><button type="button" class="btn g" id="rs" hidden>Сбросить все данные</button></div></form></dialog>
+
+<dialog id="sd"><form id="sf"><h2 id="sh"></h2>
+<label>Тема теста<input id="st" maxlength="60" placeholder="например, Баллистика"></label>
+<div class="row"><label style="flex:1">Набрано баллов<input id="sg" type="number" min="0" step="any"></label><label style="flex:1">Максимум<input id="sm" type="number" min="1" step="any"></label></div>
+<p class="err" id="se"></p><div class="row"><button class="btn">Сохранить</button><button type="button" class="btn g" id="sx">Отмена</button></div></form></dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const SUBJ={kz:'Қазақ тілі',ru:'Русский язык',en:'English',alg:'Алгебра',geo:'Геометрия',chem:'Химия',phys:'Физика',bio:'Биология'};
+const $=s=>document.querySelector(s),esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let S=null;try{S=JSON.parse(localStorage.getItem('leo3'))}catch(e){}
+S=S&&S.sc?S:{p:null,sc:{},pr:{}};
+const save=()=>{try{localStorage.setItem('leo3',JSON.stringify(S))}catch(e){}};
+let cur=null,ed=null,raf=0;const out=$('#out');
+const pct=k=>{const a=S.sc[k]||[],m=a.reduce((x,e)=>x+e.max,0);return m?a.reduce((x,e)=>x+e.got,0)/m:null};
+const P=v=>v==null?'—':Math.round(v*100)+'%';
+const tag=v=>v==null?'':v>=.75?'<span class="tg hi">интерес · ≥75%</span>':v<.5?'<span class="tg lo">подтянуть · &lt;50%</span>':'<span class="tg">в процессе</span>';
+const bar=v=>`<div class="pb"><i style="width:${v==null?0:Math.round(v*100)}%"></i></div>`;
+const entries=k=>(S.sc[k]||[]).map((e,i)=>`<div class="en"><span>${esc(e.topic)}</span><b>${e.got}/${e.max} · ${Math.round(e.got/e.max*100)}%</b><button class="ic" data-ed="${k}:${i}" aria-label="Изменить">✎</button><button class="ic" data-dl="${k}:${i}" aria-label="Удалить">✕</button></div>`).join('')||'<p class="m">Пока нет результатов.</p>';
+const setMode=g=>{$('#mode').textContent=g?'● Gemini подключён':'● Demo-режим (Gemini не подключён)';$('#mode').className='badge'+(g?' on':'')};
+const opts=Object.entries(SUBJ).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');$('#rf').innerHTML=opts;$('#ls').innerHTML=opts;
+
+function render(){
+ $('#chips').innerHTML=Object.keys(SUBJ).map(k=>`<button class="chip${k===cur?' on':''}" data-s="${k}">${SUBJ[k]}</button>`).join('');
+ const s=$('#subj');s.hidden=!cur;
+ if(cur){const v=pct(cur);s.innerHTML=`<h2>${SUBJ[cur]}</h2><div class="row"><b class="big">${P(v)}</b>${tag(v)}</div>${bar(v)}<div class="row"><button class="btn" data-add="${cur}">+ Добавить оценки за тесты</button><button class="btn g" data-learn="${cur}">Учить этот предмет ↓</button></div>${entries(cur)}`}
+ $('#scores').innerHTML=Object.keys(SUBJ).some(k=>(S.sc[k]||[]).length)?Object.keys(SUBJ).map(k=>{const v=pct(k),n=(S.sc[k]||[]).length;return `<details><summary><span>${SUBJ[k]}</span><span>${n} тест.</span><b>${P(v)}</b></summary>${bar(v)}${tag(v)}${entries(k)}</details>`}).join(''):'<p class="m">Выбери предмет сверху и нажми «Добавить оценки за тесты» — Leonardo построит по ним твою модель обучения.</p>';
+ const p=S.p;$('#hello').textContent=p?`Привет, ${p.name}! ${p.level} ${p.type==='college'?'курс':'класс'} · любимый предмет: ${SUBJ[p.fav]}`:'';
+}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-s],[data-add],[data-learn],[data-ed],[data-dl],[data-task]');if(!t)return;const d=t.dataset;
+ if(d.s){cur=cur===d.s?null:d.s;if(cur)$('#ls').value=cur;render();if(cur)$('#subj').scrollIntoView()}
+ else if(d.add)openScore(d.add,-1);
+ else if(d.learn){$('#ls').value=d.learn;$('#learn').scrollIntoView();$('#lt').focus()}
+ else if(d.ed){const[k,i]=d.ed.split(':');openScore(k,+i)}
+ else if(d.dl){const[k,i]=d.dl.split(':');S.sc[k].splice(+i,1);save();render()}
+ else if(d.task)task()});
+
+/* --- оценки --- */
+function openScore(k,i){ed=[k,i];const e=i>=0?S.sc[k][i]:{topic:'',got:'',max:''};$('#sh').textContent=SUBJ[k]+' — результат теста';$('#st').value=e.topic;$('#sg').value=e.got;$('#sm').value=e.max;$('#se').textContent='';$('#sd').showModal()}
+$('#sx').onclick=()=>$('#sd').close();
+$('#sf').addEventListener('submit',ev=>{ev.preventDefault();const[k,i]=ed,topic=$('#st').value.trim(),got=+$('#sg').value,max=+$('#sm').value;
+ if(!topic||!(max>0)||!(got>=0)||got>max||$('#sg').value===''){$('#se').textContent='Проверь: введи тему, а баллов должно быть не больше максимума (например, 22 из 56).';return}
+ const e={topic:topic.slice(0,60),got,max};(S.sc[k]=S.sc[k]||[]);i>=0?S.sc[k][i]=e:S.sc[k].push(e);save();$('#sd').close();render()});
+
+/* --- регистрация --- */
+const lv=()=>{const c=$('#rt').value==='college';$('#rl').innerHTML=Array.from({length:c?6:11},(_,i)=>`<option value="${i+1}">${i+1} ${c?'курс':'класс'}</option>`).join('')};
+$('#rt').onchange=lv;
+function openReg(){const p=S.p||{};$('#rn').value=p.name||'';$('#rt').value=p.type||'school';lv();$('#rl').value=p.level||10;$('#ra').value=p.age||'';$('#rf').value=p.fav||'phys';$('#rc').hidden=$('#rs').hidden=!S.p;$('#re').textContent='';$('#rd').showModal()}
+$('#pbtn').onclick=openReg;$('#rc').onclick=()=>$('#rd').close();
+$('#rd').addEventListener('cancel',e=>{if(!S.p)e.preventDefault()});
+$('#rs').onclick=()=>{S={p:null,sc:{},pr:{}};save();cur=null;out.innerHTML='';render();$('#rd').close();openReg()};
+$('#rform').addEventListener('submit',ev=>{ev.preventDefault();const n=$('#rn').value.trim(),a=+$('#ra').value;
+ if(!n||!(a>=5&&a<=60)){$('#re').textContent='Введи имя и возраст (от 5 до 60).';return}
+ S.p={name:n.slice(0,30),type:$('#rt').value,level:+$('#rl').value,age:a,fav:$('#rf').value};save();$('#rd').close();render()});
+
+/* --- контекст для Gemini: только нужное, а не вся модель --- */
+function ctx(sub){const p=S.p||{},st=[],lw=[],ht=[],lt=[];
+ for(const k in SUBJ){const v=pct(k);if(v!=null){if(v>=.75)st.push(SUBJ[k]+' '+P(v));else if(v<.5)lw.push(SUBJ[k]+' '+P(v))}
+  for(const e of S.sc[k]||[]){const q=e.got/e.max,s=`${SUBJ[k]}: ${e.topic} (${e.got}/${e.max})`;if(q>=.75)ht.push(s);else if(q<.5)lt.push(s)}}
+ const pr=S.pr[sub],c=p.type==='college';
+ return `Ученик: ${c?'студент':'школьник'}, ${p.level} ${c?'курс':'класс'}, ${p.age} лет; любимый предмет: ${SUBJ[p.fav]||'—'}.\nПредметы ≥75% (интерес): ${st.slice(0,5).join(', ')||'нет данных'}.\nПредметы <50%: ${lw.slice(0,5).join(', ')||'нет'}.\nСильные темы: ${ht.slice(0,6).join('; ')||'нет'}.\nСлабые темы: ${lt.slice(0,6).join('; ')||'нет'}.\nТекущий предмет — ${SUBJ[sub]}: ${P(pct(sub))}${pr?`; решено задач ${pr[1]}, верно ${pr[0]}`:''}.`}
+const SYS='Ты — Leonardo, адаптивный ИИ-репетитор. Отвечай по-русски (для казахского и английского давай примеры на изучаемом языке с переводом). Опирайся на профиль ученика: предмет или тема с результатом ≥75% — это интерес ученика, объясняй новое через эти темы (например, через баллистику, если она сильная); для слабых тем (<50%) начинай с простого и связывай их с сильными. Учитывай возраст и класс. Объясняй короткими шагами (3–5 абзацев по 2–3 предложения), в конце — один контрольный вопрос. Не выдумывай фактов, проверяй вычисления.';
+const lessonP=(s,t)=>`${ctx(s)}\n\nНачни урок по предмету «${SUBJ[s]}», тема: ${t||'выбери подходящую сам, исходя из профиля'}. Абзацы раздели пустой строкой, ключевые слова выделяй **жирным**.`;
+const taskP=(s,t)=>`${ctx(s)}\n\nСоставь одну задачу по предмету «${SUBJ[s]}», тема: ${t||'выбери сам, исходя из профиля'}; сложность подбери по профилю. Верни ТОЛЬКО JSON: {"question":"...","options":["...","...","...","..."],"correct":0,"explanation":"...","scene":{"objects":[{"type":"box|sphere|pyramid|cylinder","pos":[x,y,z],"size":[sx,sy,sz],"color":"#RRGGBB","label":"..."}],"vectors":[{"name":"...","from":[x,y,z],"to":[x,y,z],"color":"#RRGGBB"}],"projectile":{"v0":20,"angle":45,"g":9.8}}}. scene — 3D-иллюстрация сути задачи в единицах от -10 до 10 (ось y вверх, земля y=0, pos — центр фигуры, size пирамиды = [сторона основания, высота, сторона]); projectile добавляй только для задач на бросок; для предметов без геометрии покажи наглядную 3D-метафору (молекула, органеллы, части слова блоками). Никакого кода — только данные.`;
+async function ai(kind,prompt){try{const r=await fetch('/api/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,system:SYS,prompt})});if(!r.ok)return null;const d=await r.json();return d.text||null}catch(e){return null}}
+fetch('/api/status').then(r=>r.json()).then(d=>setMode(!!d.gemini)).catch(()=>setMode(false));
+
+/* --- demo-заготовки, если Gemini недоступен --- */
+const blk=a=>({objects:a.map((t,i)=>({type:'box',pos:[(i-(a.length-1)/2)*4.2,1,0],size:[3.6,2,1.4],color:['#6366F1','#0271DF','#22D3EE'][i%3],label:t}))});
+const MT={
+ phys:{q:'Мяч брошен со скоростью 20 м/с под углом 45° к горизонту (g = 9,8 м/с²). Найдите дальность полёта.',o:['20,4 м','40,8 м','28,8 м','81,6 м'],c:1,e:'R = v₀²·sin(2θ)/g = 400·1/9,8 ≈ 40,8 м. 81,6 м получится, если забыть, что sin 90° = 1, и удвоить результат.',sc:{projectile:{v0:20,angle:45,g:9.8}}},
+ geo:{q:'Правильная четырёхугольная пирамида: сторона основания 6, высота 4. Найдите апофему (высоту боковой грани).',o:['4','5','6,5','7'],c:1,e:'Апофема² = h² + (a/2)² = 16 + 9 = 25, значит апофема = 5. Ответ 4 — путаница высоты пирамиды с апофемой.',sc:{objects:[{type:'pyramid',pos:[0,2,0],size:[6,4,6],color:'#6366F1'}],vectors:[{name:'h = 4',from:[0,0,0],to:[0,4,0],color:'#22D3EE'},{name:'апофема',from:[3,0,0],to:[0,4,0],color:'#F97316'}]}},
+ alg:{q:'Векторы a(3; 0) и b(0; 4). Чему равен модуль суммы a + b?',o:['5','7','12','3,5'],c:0,e:'a + b = (3; 4), |a + b| = √(9 + 16) = 5.',sc:{vectors:[{name:'a',from:[0,0,0],to:[3,0,0],color:'#6366F1'},{name:'b',from:[3,0,0],to:[3,4,0],color:'#22D3EE'},{name:'a+b',from:[0,0,0],to:[3,4,0],color:'#F97316'}]}},
+ chem:{q:'Каков примерный угол H–O–H в молекуле воды?',o:['90°','104,5°','120°','180°'],c:1,e:'Две неподелённые пары кислорода сжимают угол до ≈104,5°, молекула уголковая.',sc:{objects:[{type:'sphere',pos:[0,2,0],size:[1.8],color:'#F43F5E',label:'O'},{type:'sphere',pos:[-1.58,.8,0],size:[1],color:'#E2E8F0',label:'H'},{type:'sphere',pos:[1.58,.8,0],size:[1],color:'#E2E8F0',label:'H'}]}},
+ bio:{q:'Какая органелла клетки синтезирует основную часть АТФ?',o:['Ядро','Рибосома','Митохондрия','Лизосома'],c:2,e:'В митохондриях идёт окислительное фосфорилирование — основной источник АТФ.',sc:{objects:[{type:'sphere',pos:[-4.5,1.5,0],size:[3],color:'#6366F1',label:'ядро'},{type:'cylinder',pos:[0,1.5,0],size:[2.4,3],color:'#F97316',label:'митохондрия'},{type:'box',pos:[4.5,1,0],size:[2,2,2],color:'#22D3EE',label:'рибосома'}]}},
+ en:{q:'Choose the correct form: She ___ to school every day.',o:['go','goes','going','gone'],c:1,e:'В Present Simple для he/she/it добавляем -s/-es: she goes.',sc:blk(['She','goes','to school'])},
+ kz:{q:'«Кітап» сөзінің көпше түрін таңдаңыз.',o:['кітапләр','кітаптар','кітаплар','кітапдар'],c:1,e:'Қатаң «п» дыбысынан кейін жалғау «-тар» болады: кітаптар.',sc:blk(['кітап','-тар'])},
+ ru:{q:'Сколько корней в слове «водовоз»?',o:['1','2','3','4'],c:1,e:'Вод- и -воз- — два корня, соединённые гласной «о».',sc:blk(['вод','о','воз'])}};
+function mockLesson(sub,topic){const p=S.p||{},hi=[];for(const k in SUBJ)for(const e of S.sc[k]||[])if(e.got/e.max>=.75)hi.push(e.topic);const t=topic||'ключевая идея предмета';
+ return [`**Шаг 1. Идея.** Сегодня разбираем «${t}» по предмету «${SUBJ[sub]}». Сначала — суть одной фразой, без формул.`,hi.length?`**Шаг 2. Опора на сильное.** Ты уверенно знаешь «${hi[0]}». Новая тема строится на тех же принципах — найди, что у них общего.`:`**Шаг 2. Опора на любимое.** Твой любимый предмет — ${SUBJ[p.fav]||'—'}. Представь, как идея «${t}» работает в нём.`,`**Шаг 3. Пример.** Разбери маленький пример по шагам: условие → что известно → что найти → решение.`,`**Проверь себя.** Объясни своими словами, как «${t}» связана с тем, что ты уже умеешь. Потом нажми «Задача с 3D».`].join('\n\n')}
+
+/* --- урок и задача --- */
+const ld='<div class="ld"><i></i><i></i><i></i> Leonardo думает…</div>',note='<p class="nt">Demo-режим: Gemini не подключён, показана заготовка. После подключения урок и задачи будут персональными.</p>';
+const fmt=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
+$('#bl').onclick=async()=>{const sub=$('#ls').value,topic=$('#lt').value.trim();out.innerHTML=ld;const raw=await ai('lesson',lessonP(sub,topic));
+ out.innerHTML=(raw?'':note)+(raw||mockLesson(sub,topic)).split(/\n\s*\n/).map(x=>`<div class="st">${fmt(x)}</div>`).join('')+'<button class="btn" data-task="1">Решить задачу с 3D →</button>'};
+const num=(v,d,m)=>Number.isFinite(+v)?Math.max(-m,Math.min(m,+v)):d,v3=a=>Array.isArray(a)?[num(a[0],0,20),num(a[1],0,20),num(a[2],0,20)]:[0,0,0],col=c=>/^#[0-9a-f]{6}$/i.test(c)?c:'#22D3EE';
+const sz=s=>{const a=Array.isArray(s)?s:[s,s,s];return[0,1,2].map(i=>Math.max(.2,Math.abs(num(a[i]??a[0],1,20))))};
+function clean(sc){if(!sc||typeof sc!=='object')return null;  // ИИ отдаёт только данные; код не выполняется
+ const o=(Array.isArray(sc.objects)?sc.objects:[]).slice(0,14).filter(x=>x&&['box','sphere','pyramid','cylinder'].includes(x.type)).map(x=>({t:x.type,p:v3(x.pos),s:sz(x.size),c:col(x.color),l:String(x.label||'').slice(0,16)}));
+ const vs=(Array.isArray(sc.vectors)?sc.vectors:[]).slice(0,8).filter(x=>x).map(x=>({n:String(x.name||'').slice(0,16),f:v3(x.from),to:v3(x.to),c:col(x.color)}));
+ const q=sc.projectile,pj=q&&typeof q==='object'?{v:Math.abs(num(q.v0,20,100))||20,a:Math.min(85,Math.max(5,num(q.angle,45,89))),g:Math.max(1,Math.abs(num(q.g,9.8,30)))}:null;
+ return o.length||vs.length||pj?{o,vs,pj}:null}
+async function task(){const sub=$('#ls').value,topic=$('#lt').value.trim();out.innerHTML=ld;let t=null;const raw=await ai('task',taskP(sub,topic));
+ if(raw)try{const j=JSON.parse(raw.replace(/```json|```/g,'').trim()),sc=clean(j.scene);
+  if(typeof j.question==='string'&&Array.isArray(j.options)&&j.options.length===4&&Number.isInteger(j.correct)&&j.correct>=0&&j.correct<4&&sc)t={q:j.question,o:j.options.map(String),c:j.correct,e:String(j.explanation||''),sc}}catch(e){}
+ const demo=!t;if(!t){const m=MT[sub];t={q:m.q,o:m.o,c:m.c,e:m.e,sc:clean(m.sc)}}
+ out.innerHTML=`${demo?note:''}<div class="card"><div id="cv3" class="cv" aria-label="3D-иллюстрация задачи"></div><p class="q">${esc(t.q)}</p><div id="opts">${t.o.map((x,i)=>`<button class="opt" data-o="${i}">${esc(x)}</button>`).join('')}</div><div id="fb"></div></div>`;
+ show3D($('#cv3'),t.sc);
+ $('#opts').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;const i=+b.dataset.o,ok=i===t.c;
+  $('#opts').querySelectorAll('button').forEach((x,j)=>{x.disabled=true;if(j===t.c)x.classList.add('ok');else if(j===i)x.classList.add('no')});
+  const a=S.pr[sub]||[0,0];a[1]++;if(ok)a[0]++;S.pr[sub]=a;save();
+  $('#fb').innerHTML=`<p><b>${ok?'Верно!':'Не совсем.'}</b> ${esc(t.e)}</p><button class="btn" data-task="1">Следующая задача →</button>`}}
+
+/* --- 3D: рендер данных сцены (Three.js), вращение мышью/пальцем, колесо — масштаб --- */
+function show3D(el,sc){cancelAnimationFrame(raf);el.innerHTML='';
+ if(!window.THREE){el.innerHTML='<p class="m pad">3D не загрузилось — проверь интернет.</p>';return}
+ let r;try{r=new THREE.WebGLRenderer({antialias:true,alpha:true})}catch(e){el.innerHTML='<p class="m pad">WebGL недоступен в этом браузере.</p>';return}
+ const W=el.clientWidth||600,H=el.clientHeight||360;r.setSize(W,H);r.setPixelRatio(Math.min(devicePixelRatio,2));el.appendChild(r.domElement);
+ const sce=new THREE.Scene(),cam=new THREE.PerspectiveCamera(50,W/H,.1,500);
+ sce.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.8);dl.position.set(6,12,8);sce.add(dl);
+ sce.add(new THREE.GridHelper(24,24,0x2a3a5c,0x172036));sce.add(new THREE.AxesHelper(3));
+ const lab=(t,p,c)=>{if(!t)return;const cv=document.createElement('canvas');cv.width=256;cv.height=64;const x=cv.getContext('2d');x.font='bold 32px system-ui,sans-serif';x.fillStyle=c||'#E2E8F0';x.textAlign='center';x.fillText(t,128,44);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),depthTest:false}));s.scale.set(3.2,.8,1);s.position.set(p[0],p[1],p[2]);sce.add(s)};
+ let R=8,tgt=new THREE.Vector3(0,2,0),ball=null,pj=null;
+ sc.o.forEach(o=>{const[a,b,c]=o.s;let g;
+  if(o.t==='box')g=new THREE.BoxGeometry(a,b,c);else if(o.t==='sphere')g=new THREE.SphereGeometry(a/2,24,16);else if(o.t==='cylinder')g=new THREE.CylinderGeometry(a/2,a/2,b,24);else{g=new THREE.ConeGeometry(a/Math.SQRT2,b,4);g.rotateY(Math.PI/4)}
+  const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:o.c,transparent:true,opacity:.78,roughness:.5}));m.position.set(o.p[0],o.p[1],o.p[2]);sce.add(m);
+  const e=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({color:0xffffff}));e.position.copy(m.position);sce.add(e);
+  lab(o.l,[o.p[0],o.p[1]+(o.t==='sphere'?a/2:b/2)+.8,o.p[2]]);R=Math.max(R,Math.hypot(o.p[0],o.p[1],o.p[2])+Math.max(a,b,c))});
+ sc.vs.forEach(v=>{const d=new THREE.Vector3(v.to[0]-v.f[0],v.to[1]-v.f[1],v.to[2]-v.f[2]),L=d.length();if(L<.01)return;
+  sce.add(new THREE.ArrowHelper(d.clone().normalize(),new THREE.Vector3(v.f[0],v.f[1],v.f[2]),L,new THREE.Color(v.c).getHex(),Math.min(.8,L/3),.4));
+  lab(v.n,[(v.f[0]+v.to[0])/2,(v.f[1]+v.to[1])/2+.7,(v.f[2]+v.to[2])/2],v.c);R=Math.max(R,Math.hypot(v.to[0],v.to[1],v.to[2]))});
+ if(sc.pj){const{v,a,g}=sc.pj,q=a*Math.PI/180,T=2*v*Math.sin(q)/g,Rg=v*v*Math.sin(2*q)/g,Hm=(v*Math.sin(q))**2/(2*g),k=14/Math.max(Rg,Hm*2,1),ox=-Rg*k/2,pts=[];  // формулы — обычная математика, без ИИ
+  for(let i=0;i<=60;i++){const t=T*i/60;pts.push(new THREE.Vector3(ox+v*Math.cos(q)*t*k,Math.max(0,(v*Math.sin(q)*t-g*t*t/2)*k),0))}
+  sce.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x22D3EE})));
+  ball=new THREE.Mesh(new THREE.SphereGeometry(.35,16,12),new THREE.MeshStandardMaterial({color:0xF97316}));sce.add(ball);
+  sce.add(new THREE.ArrowHelper(new THREE.Vector3(Math.cos(q),Math.sin(q),0),new THREE.Vector3(ox,0,0),3.5,0x6366F1,.8,.4));lab('v₀',[ox+1.2,3.6,0],'#6366F1');
+  lab(`R ≈ ${Rg.toFixed(1)} м`,[0,.8,0]);lab(`H ≈ ${Hm.toFixed(1)} м`,[0,Hm*k+.9,0]);pj={T,q,v,g,k,ox};tgt.set(0,Hm*k/2,0)}
+ let az=.8,ph=1.1,rad=Math.max(12,R*2.2),drag=null;const cvs=r.domElement;cvs.style.touchAction='none';
+ const upd=()=>{cam.position.set(tgt.x+rad*Math.sin(ph)*Math.sin(az),tgt.y+rad*Math.cos(ph),tgt.z+rad*Math.sin(ph)*Math.cos(az));cam.lookAt(tgt)};
+ cvs.onpointerdown=e=>{drag=[e.clientX,e.clientY];cvs.setPointerCapture(e.pointerId)};
+ cvs.onpointermove=e=>{if(!drag)return;az-=(e.clientX-drag[0])*.008;ph=Math.min(1.5,Math.max(.2,ph-(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY]};
+ cvs.onpointerup=cvs.onpointercancel=()=>{drag=null};
+ cvs.onwheel=e=>{e.preventDefault();rad=Math.min(60,Math.max(5,rad*(1+Math.sign(e.deltaY)*.08)))};
+ const loop=()=>{if(!el.isConnected)return;if(ball&&pj){const t=(performance.now()/1000*.6)%1*pj.T;ball.position.set(pj.ox+pj.v*Math.cos(pj.q)*t*pj.k,Math.max(0,(pj.v*Math.sin(pj.q)*t-pj.g*t*t/2)*pj.k),0)}upd();r.render(sce,cam);raf=requestAnimationFrame(loop)};loop()}
+
+setMode(false);render();if(!S.p)openReg();
+</script></body></html>
