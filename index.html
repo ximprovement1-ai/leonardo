@@ -73,7 +73,7 @@ const P=v=>v==null?'—':Math.round(v*100)+'%';
 const tag=v=>v==null?'':v>=.75?'<span class="tg hi">интерес · ≥75%</span>':v<.5?'<span class="tg lo">подтянуть · &lt;50%</span>':'<span class="tg">в процессе</span>';
 const bar=v=>`<div class="pb"><i style="width:${v==null?0:Math.round(v*100)}%"></i></div>`;
 const entries=k=>(S.sc[k]||[]).map((e,i)=>`<div class="en"><span>${esc(e.topic)}</span><b>${e.got}/${e.max} · ${Math.round(e.got/e.max*100)}%</b><button class="ic" data-ed="${k}:${i}" aria-label="Изменить">✎</button><button class="ic" data-dl="${k}:${i}" aria-label="Удалить">✕</button></div>`).join('')||'<p class="m">Пока нет результатов.</p>';
-const setMode=g=>{$('#mode').textContent=g?'● Gemini подключён':'● Demo-режим (Gemini не подключён)';$('#mode').className='badge'+(g?' on':'')};
+const setMode=g=>{$('#mode').textContent=g?'● ИИ подключён':'● Demo-режим (ИИ не подключён)';$('#mode').className='badge'+(g?' on':'')};
 const opts=Object.entries(SUBJ).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');$('#rf').innerHTML=opts;$('#ls').innerHTML=opts;
 
 function render(){
@@ -136,7 +136,7 @@ function mockLesson(sub,topic){const p=S.p||{},hi=[];for(const k in SUBJ)for(con
  return [`**Шаг 1. Идея.** Сегодня разбираем «${t}» по предмету «${SUBJ[sub]}». Сначала — суть одной фразой, без формул.`,hi.length?`**Шаг 2. Опора на сильное.** Ты уверенно знаешь «${hi[0]}». Новая тема строится на тех же принципах — найди, что у них общего.`:`**Шаг 2. Опора на любимое.** Твой любимый предмет — ${SUBJ[p.fav]||'—'}. Представь, как идея «${t}» работает в нём.`,`**Шаг 3. Пример.** Разбери маленький пример по шагам: условие → что известно → что найти → решение.`,`**Проверь себя.** Объясни своими словами, как «${t}» связана с тем, что ты уже умеешь. Потом нажми «Задача с 3D».`].join('\n\n')}
 
 /* --- урок и задача --- */
-const ld='<div class="ld"><i></i><i></i><i></i> Leonardo думает…</div>',note='<p class="nt">Demo-режим: Gemini не подключён, показана заготовка. После подключения урок и задачи будут персональными.</p>';
+const ld='<div class="ld"><i></i><i></i><i></i> Leonardo думает…</div>',note='<p class="nt">Demo-режим: ИИ не отвечает или не подключён, показана заготовка. После подключения урок и задачи будут персональными.</p>';
 const fmt=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
 $('#bl').onclick=async()=>{const sub=$('#ls').value,topic=$('#lt').value.trim();out.innerHTML=ld;const raw=await ai('lesson',lessonP(sub,topic));
  out.innerHTML=(raw?'':note)+(raw||mockLesson(sub,topic)).split(/\n\s*\n/).map(x=>`<div class="st">${fmt(x)}</div>`).join('')+'<button class="btn" data-task="1">Решить задачу с 3D →</button>'};
